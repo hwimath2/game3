@@ -21,13 +21,36 @@ for (const key in ASSETS) {
 // --- 2) 캔버스 설정 ---
 const canvas = document.getElementById("gameCanvas");
 const ctx    = canvas.getContext("2d");
-canvas.width  = 800;
-canvas.height = 600;
+canvas.width  = 450;
+canvas.height = 800;
 
 // --- 3) 상수 정의 ---
-const PLAYER_SIZE   = 80;
-const ENEMY_SIZE    = 60;    // 적 크기
-const ITEM_SIZE     = 50;
+// 화면 크기에 따른 상대적 크기 계산
+const PLAYER_SIZE   = canvas.width * 0.13;  // 화면 너비의 13%
+const ENEMY_SIZE    = canvas.width * 0.10;  // 화면 너비의 10%
+const ITEM_SIZE     = canvas.width * 0.09;  // 화면 너비의 9%
+
+// 이미지 렌더링 시 object-fit 효과 적용
+function drawImage(img, x, y, width, height) {
+    const aspectRatio = img.width / img.height;
+    let drawWidth = width;
+    let drawHeight = height;
+    
+    // 이미지 비율 유지
+    if (width / height > aspectRatio) {
+        drawWidth = height * aspectRatio;
+    } else {
+        drawHeight = width / aspectRatio;
+    }
+    
+    // 중앙 정렬
+    const offsetX = (width - drawWidth) / 2;
+    const offsetY = (height - drawHeight) / 2;
+    
+    ctx.drawImage(img, x + offsetX, y + offsetY, drawWidth, drawHeight);
+}
+
+// Player, Enemy, Item 클래스의 draw 메서드에서 ctx.drawImage 대신 drawImage 함수 사용
 const ITEM_INTERVAL = 10000; // 10초마다 아이템
 const BASE_SHOT_INT = 500;   // 자동 발사 기본 간격(ms)
 const SPEED_FACTOR  = 0.02;  // 적 속도 증가 비율 (초당)
